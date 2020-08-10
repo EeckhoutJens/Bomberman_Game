@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainGame.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Materials\ColorMaterial.cpp" />
+    <ClCompile Include="Materials\SpikeyMaterial.cpp" />
+    <ClCompile Include="Materials\UberMaterial.cpp" />
+    <ClCompile Include="Materials\DiffuseMaterial.cpp" />
+    <ClCompile Include="Materials\SkinnedDiffuseMaterial.cpp" />
+    <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow.cpp" />
+    <ClCompile Include="Materials\Shadow\SkinnedDiffuseMaterial_Shadow.cpp" />
+    <ClCompile Include="Materials\PostProcessing\PostBlur.cpp" />
+    <ClCompile Include="Materials\PostProcessing\PostGrayscale.cpp" />
+    <ClCompile Include="Materials\PostProcessing\PostColorGrading.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Scenes\TitleScreen.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Scenes\ExamScene.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Scenes\CreditsScene.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Scenes\ControlScreen.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Level\DestructableBox.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Level\ExplosionEmitter.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Level\Grid.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Level\IndestructableBox.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Level\LevelBorder.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Character\Bomb.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Character\ExamCharacter.cpp" />
+    <ClCompile Include="CourseObjects\Exam\PowerUps\BombPowerUp.cpp" />
+    <ClCompile Include="CourseObjects\Exam\PowerUps\RangePowerUp.cpp" />
+    <ClCompile Include="CourseObjects\Exam\Scenes\KeyboardControlScreen.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainGame.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Materials\ColorMaterial.h" />
+    <ClInclude Include="Materials\SpikeyMaterial.h" />
+    <ClInclude Include="Materials\UberMaterial.h" />
+    <ClInclude Include="Materials\DiffuseMaterial.h" />
+    <ClInclude Include="Materials\SkinnedDiffuseMaterial.h" />
+    <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow.h" />
+    <ClInclude Include="Materials\Shadow\SkinnedDiffuseMaterial_Shadow.h" />
+    <ClInclude Include="Materials\PostProcessing\PostBlur.h" />
+    <ClInclude Include="Materials\PostProcessing\PostGrayscale.h" />
+    <ClInclude Include="Materials\PostProcessing\PostColorGrading.h" />
+    <ClInclude Include="CourseObjects\Exam\Scenes\TitleScreen.h" />
+    <ClInclude Include="CourseObjects\Exam\Scenes\ExamScene.h" />
+    <ClInclude Include="CourseObjects\Exam\Scenes\CreditsScene.h" />
+    <ClInclude Include="CourseObjects\Exam\Scenes\ControlScreen.h" />
+    <ClInclude Include="CourseObjects\Exam\Level\DestructableBox.h" />
+    <ClInclude Include="CourseObjects\Exam\Level\ExplosionEmitter.h" />
+    <ClInclude Include="CourseObjects\Exam\Level\Grid.h" />
+    <ClInclude Include="CourseObjects\Exam\Level\IndestructableBox.h" />
+    <ClInclude Include="CourseObjects\Exam\Level\LevelBorder.h" />
+    <ClInclude Include="CourseObjects\Exam\Character\Bomb.h" />
+    <ClInclude Include="CourseObjects\Exam\Character\ExamCharacter.h" />
+    <ClInclude Include="CourseObjects\Exam\PowerUps\BombPowerUp.h" />
+    <ClInclude Include="CourseObjects\Exam\PowerUps\RangePowerUp.h" />
+    <ClInclude Include="CourseObjects\Exam\Scenes\KeyboardControlScreen.h" />
+  </ItemGroup>
+</Project>
