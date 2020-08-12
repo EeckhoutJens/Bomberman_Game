@@ -13,7 +13,6 @@
     <ClCompile Include="Materials\Shadow\SkinnedDiffuseMaterial_Shadow.cpp" />
     <ClCompile Include="Materials\PostProcessing\PostBlur.cpp" />
     <ClCompile Include="Materials\PostProcessing\PostGrayscale.cpp" />
-    <ClCompile Include="Materials\PostProcessing\PostColorGrading.cpp" />
     <ClCompile Include="CourseObjects\Exam\Scenes\TitleScreen.cpp" />
     <ClCompile Include="CourseObjects\Exam\Scenes\ExamScene.cpp" />
     <ClCompile Include="CourseObjects\Exam\Scenes\CreditsScene.cpp" />
@@ -41,7 +40,6 @@
     <ClInclude Include="Materials\Shadow\SkinnedDiffuseMaterial_Shadow.h" />
     <ClInclude Include="Materials\PostProcessing\PostBlur.h" />
     <ClInclude Include="Materials\PostProcessing\PostGrayscale.h" />
-    <ClInclude Include="Materials\PostProcessing\PostColorGrading.h" />
     <ClInclude Include="CourseObjects\Exam\Scenes\TitleScreen.h" />
     <ClInclude Include="CourseObjects\Exam\Scenes\ExamScene.h" />
     <ClInclude Include="CourseObjects\Exam\Scenes\CreditsScene.h" />

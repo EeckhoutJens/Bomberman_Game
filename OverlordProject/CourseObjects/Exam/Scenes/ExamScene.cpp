@@ -20,13 +20,11 @@
 #include "OverlordGame.h"
 #include "SceneManager.h"
 #include "../Level/ExplosionEmitter.h"
-#include "../OverlordProject/Materials/PostProcessing/PostColorGrading.h"
 #include "../OverlordProject/Materials/SkinnedDiffuseMaterial.h"
 #include "../OverlordProject/Materials/Shadow/SkinnedDiffuseMaterial_Shadow.h"
 #include "../OverlordProject/Materials/Shadow/DiffuseMaterial_Shadow.h"
 #include "DebugRenderer.h"
 
-//TEST CHANGE FILES
 ExamScene::ExamScene() : GameScene(L"ExamScene") 
 , m_pCamera{nullptr}
 , m_pBgm{nullptr}
@@ -50,7 +48,7 @@ ExamScene::~ExamScene()
 void ExamScene::Initialize()
 {
 	std::srand(unsigned int(std::time(0)));
-	auto context = GetGameContext();
+	GameContext context = GetGameContext();
 	context.pShadowMapper->SetLight({ 0,150.f,-40.f }, { 0.740129888f, -0.497205281f, -0.609117377f });
 	//this->GetPhysxProxy()->EnablePhysxDebugRendering(true);
 	DebugRenderer::ToggleDebugRenderer();
@@ -58,8 +56,8 @@ void ExamScene::Initialize()
 	//GROUND PLANE
 	//************
 	auto physX = PhysxManager::GetInstance()->GetPhysics();
-	auto pGroundMat = physX->createMaterial(0, 0, 0);
-	auto pGround = new GameObject();
+	physx::PxMaterial* pGroundMat = physX->createMaterial(0, 0, 0);
+	GameObject* pGround = new GameObject();
 	pGround->AddComponent(new RigidBodyComponent(true));
 
 	std::shared_ptr<physx::PxGeometry> geom(new physx::PxPlaneGeometry());
@@ -71,7 +69,7 @@ void ExamScene::Initialize()
 	m_pCamera = new FixedCamera{};
 	m_pCamera->AddComponent(new CameraComponent{});
 	AddChild(m_pCamera);
-	auto comp = m_pCamera->GetComponent<CameraComponent>();
+	CameraComponent* comp = m_pCamera->GetComponent<CameraComponent>();
 	comp->SetActive();
 	m_pCamera->GetTransform()->Translate(0, 175, -120);
 	m_pCamera->GetTransform()->Rotate(55, 0, 0, true);
@@ -79,71 +77,71 @@ void ExamScene::Initialize()
 
 	//MATERIALS
 	//*********
-	auto diffMatP1 = new SkinnedDiffuseMaterial_Shadow();
+	SkinnedDiffuseMaterial_Shadow* diffMatP1 = new SkinnedDiffuseMaterial_Shadow();
 	diffMatP1->SetDiffuseTexture(L"./Resources/Textures/Character_diffuse.png");
 	diffMatP1->SetNormalTexture(L"./Resources/Textures/Character_normal.png");
 	diffMatP1->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	context.pMaterialManager->AddMaterial(diffMatP1, 0);
 
-	auto diffMatP2 = new SkinnedDiffuseMaterial_Shadow();
+	SkinnedDiffuseMaterial_Shadow* diffMatP2 = new SkinnedDiffuseMaterial_Shadow();
 	diffMatP2->SetDiffuseTexture(L"./Resources/Textures/Character2_diffuse.png");
 	diffMatP2->SetNormalTexture(L"./Resources/Textures/Character_normal.png");
 	diffMatP2->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	context.pMaterialManager->AddMaterial(diffMatP2, 1);
 
-	auto diffMatP3 = new SkinnedDiffuseMaterial_Shadow();
+	SkinnedDiffuseMaterial_Shadow*  diffMatP3 = new SkinnedDiffuseMaterial_Shadow();
 	diffMatP3->SetDiffuseTexture(L"./Resources/Textures/Character3_diffuse.png");
 	diffMatP3->SetNormalTexture(L"./Resources/Textures/Character_normal.png");
 	diffMatP3->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	context.pMaterialManager->AddMaterial(diffMatP3, 2);
 
-	auto diffMatP4 = new SkinnedDiffuseMaterial_Shadow();
+	SkinnedDiffuseMaterial_Shadow* diffMatP4 = new SkinnedDiffuseMaterial_Shadow();
 	diffMatP4->SetDiffuseTexture(L"./Resources/Textures/Character4_diffuse.png");
 	diffMatP4->SetNormalTexture(L"./Resources/Textures/Character_normal.png");
 	diffMatP4->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	context.pMaterialManager->AddMaterial(diffMatP4, 3);
 
-	auto diffMatFloor = new DiffuseMaterial_Shadow();
+	DiffuseMaterial_Shadow* diffMatFloor = new DiffuseMaterial_Shadow();
 	diffMatFloor->SetDiffuseTexture(L"./Resources/Textures/Floor.png");
 	diffMatFloor->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	context.pMaterialManager->AddMaterial(diffMatFloor, 4);
 
-	auto diffMatMetalBox = new DiffuseMaterial_Shadow();
+	DiffuseMaterial_Shadow* diffMatMetalBox = new DiffuseMaterial_Shadow();
 	diffMatMetalBox->SetDiffuseTexture(L"./Resources/Textures/MetalBox_diffuse.png");
 	diffMatMetalBox->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	context.pMaterialManager->AddMaterial(diffMatMetalBox, 5);
 
-	auto diffMatWoodBox = new DiffuseMaterial_Shadow();
+	DiffuseMaterial_Shadow* diffMatWoodBox = new DiffuseMaterial_Shadow();
 	diffMatWoodBox->SetDiffuseTexture(L"./Resources/Textures/WoodBox_diffuse.png");
 	diffMatWoodBox->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	context.pMaterialManager->AddMaterial(diffMatWoodBox, 6);
 
-	auto diffMatBomb = new DiffuseMaterial_Shadow();
+	DiffuseMaterial_Shadow* diffMatBomb = new DiffuseMaterial_Shadow();
 	diffMatBomb->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	diffMatBomb->SetDiffuseTexture(L"./Resources/Textures/Bomb_diffuseP1.png");
 	context.pMaterialManager->AddMaterial(diffMatBomb, 7);
 
-	auto diffMatBomb2 = new DiffuseMaterial_Shadow();
+	DiffuseMaterial_Shadow* diffMatBomb2 = new DiffuseMaterial_Shadow();
 	diffMatBomb2->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	diffMatBomb2->SetDiffuseTexture(L"./Resources/Textures/Bomb_diffuseP2.png");
 	context.pMaterialManager->AddMaterial(diffMatBomb2, 10);
 
-	auto diffMatBomb3 = new DiffuseMaterial_Shadow();
+	DiffuseMaterial_Shadow* diffMatBomb3 = new DiffuseMaterial_Shadow();
 	diffMatBomb3->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	diffMatBomb3->SetDiffuseTexture(L"./Resources/Textures/Bomb_diffuseP3.png");
 	context.pMaterialManager->AddMaterial(diffMatBomb3, 11);
 
-	auto diffMatBomb4 = new DiffuseMaterial_Shadow();
+	DiffuseMaterial_Shadow* diffMatBomb4 = new DiffuseMaterial_Shadow();
 	diffMatBomb4->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	diffMatBomb4->SetDiffuseTexture(L"./Resources/Textures/Bomb_diffuseP4.png");
 	context.pMaterialManager->AddMaterial(diffMatBomb4, 12);
 
-	auto diffMatBombPU = new DiffuseMaterial_Shadow();
+	DiffuseMaterial_Shadow* diffMatBombPU = new DiffuseMaterial_Shadow();
 	diffMatBombPU->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	diffMatBombPU->SetDiffuseTexture(L"./Resources/Textures/BombPowerUp.png");
 	context.pMaterialManager->AddMaterial(diffMatBombPU, 8);
 
-	auto diffMatRangePU = new DiffuseMaterial_Shadow();
+	DiffuseMaterial_Shadow* diffMatRangePU = new DiffuseMaterial_Shadow();
 	diffMatRangePU->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	diffMatRangePU->SetDiffuseTexture(L"./Resources/Textures/RangePowerUp.png");
 	context.pMaterialManager->AddMaterial(diffMatRangePU, 9);
@@ -151,8 +149,8 @@ void ExamScene::Initialize()
 
 	//LEVEL
 	//*****
-	auto pGroundObj = new GameObject();
-	auto pGroundModel = new ModelComponent(L"./Resources/Meshes/UnitPlane.ovm");
+	GameObject* pGroundObj = new GameObject();
+	ModelComponent* pGroundModel = new ModelComponent(L"./Resources/Meshes/UnitPlane.ovm");
 	pGroundModel->SetMaterial(4);
 
 	pGroundObj->AddComponent(pGroundModel);
@@ -180,19 +178,19 @@ void ExamScene::Initialize()
 
 	//CHARACTERS
 	//*********
-	auto P1 = new ExamCharacter{ 4,11,100,comp,0,7 };
+	ExamCharacter* P1 = new ExamCharacter{ 4,11,100,comp,0,7 };
 	P1->GetTransform()->Translate(-58.5f, 0.f, -58.5f);
 	AddChild(P1);
 	m_VecCharacters.push_back(P1);
 
-	auto P2 = new ExamCharacter{ 4,11,100,comp,1,10 };
+	ExamCharacter* P2 = new ExamCharacter{ 4,11,100,comp,1,10 };
 	P2->GetTransform()->Translate(58.5f, 0, 58.5f);
 	AddChild(P2);
 	m_VecCharacters.push_back(P2);
 
 	//UI SETUP
 	//********
-	auto settings = OverlordGame::GetGameSettings();
+	GameSettings settings = OverlordGame::GetGameSettings();
 	m_pFont = ContentManager::Load<SpriteFont>(L"./Resources/SpriteFonts/Magneto.fnt");
 	m_pResultFont = ContentManager::Load<SpriteFont>(L"./Resources/SpriteFonts/Consolas_32.fnt");
 	m_pP1Stats = new GameObject();
@@ -213,9 +211,6 @@ void ExamScene::Initialize()
 	AddChild(m_pP2Stats);
 	AddChild(m_pPauseScreen);
 
-	auto postProcessingEffect = new PostColorGrading();
-	postProcessingEffect->SetLUTTexture(L"./Resources/Textures/lut_Test.png");
-	AddPostProcessingEffect(postProcessingEffect);
 	m_pPauseScreen->SetRender(false);
 
 }
@@ -240,7 +235,7 @@ void ExamScene::Update()
 			if (m_currShakeTimer < 0.75f)
 			{
 
-				auto shakeValue = m_Amplitude * std::sin(2 * DirectX::XM_PI * m_Frequency * m_currShakeTimer);
+				float shakeValue = m_Amplitude * std::sin(2 * DirectX::XM_PI * m_Frequency * m_currShakeTimer);
 				m_pCamera->GetTransform()->Rotate(55.f, 0, shakeValue / 2.f);
 			}
 
@@ -281,7 +276,7 @@ void ExamScene::Update()
 			if (m_currSelectedMenuOption > 0)
 				--m_currSelectedMenuOption;
 
-			auto currOption = m_arrPauseOptions[m_currSelectedMenuOption];
+			PMOptions currOption = m_arrPauseOptions[m_currSelectedMenuOption];
 
 			switch (currOption)
 			{
@@ -305,7 +300,7 @@ void ExamScene::Update()
 			if (m_currSelectedMenuOption < 2)
 				++m_currSelectedMenuOption;
 
-			auto currOption = m_arrPauseOptions[m_currSelectedMenuOption];
+			PMOptions currOption = m_arrPauseOptions[m_currSelectedMenuOption];
 
 			switch (currOption)
 			{
@@ -325,7 +320,7 @@ void ExamScene::Update()
 
 		if (GetGameContext().pInput->IsActionTriggered(m_MenuSelectActionID))
 		{
-			auto currOption = m_arrPauseOptions[m_currSelectedMenuOption];
+			PMOptions currOption = m_arrPauseOptions[m_currSelectedMenuOption];
 			switch (currOption)
 			{
 			case PMOptions::BackToMain:
@@ -355,8 +350,8 @@ void ExamScene::Update()
 
 void ExamScene::Draw()
 {
-	const auto gameContext = GetGameContext();
-	auto gameSettings = OverlordGame::GetGameSettings();
+	const GameContext gameContext = GetGameContext();
+	GameSettings gameSettings = OverlordGame::GetGameSettings();
 	if (m_pFont->GetFontName() != L""
 		&& m_pResultFont->GetFontName() != L"")
 	{
@@ -482,8 +477,8 @@ void ExamScene::CreateNewCharacter()
 		if (GetGameContext().pInput->IsGamepadConnected(GamepadIndex::PlayerThree))
 		{
 			//create character
-			auto settings = OverlordGame::GetGameSettings();
-			auto P3 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),2,11 };
+			GameSettings settings = OverlordGame::GetGameSettings();
+			ExamCharacter* P3 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),2,11 };
 			P3->GetTransform()->Translate(-58.5f, 0, 58.5f);
 			AddChild(P3);
 			m_VecCharacters.push_back(P3);
@@ -503,8 +498,8 @@ void ExamScene::CreateNewCharacter()
 		if (GetGameContext().pInput->IsGamepadConnected(GamepadIndex::PlayerFour))
 		{
 			//create character
-			auto settings = OverlordGame::GetGameSettings();
-			auto P4 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),3,12 };
+			GameSettings settings = OverlordGame::GetGameSettings();
+			ExamCharacter* P4 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),3,12 };
 			P4->GetTransform()->Translate(58.5f, 0, -58.5f);
 			AddChild(P4);
 			m_VecCharacters.push_back(P4);
@@ -582,9 +577,9 @@ void ExamScene::CheckCharacterBombs()
 					{
 						if (bomb->GetScene() == this)
 						{
-							auto bombPos = bomb->GetTransform()->GetPosition();
-							auto charPos = pChar->GetTransform()->GetPosition();
-							auto distance = hypot(hypot(bombPos.x - charPos.x, bombPos.y - charPos.y), bombPos.z - charPos.z);
+							DirectX::XMFLOAT3 bombPos = bomb->GetTransform()->GetPosition();
+							DirectX::XMFLOAT3 charPos = pChar->GetTransform()->GetPosition();
+							float distance = hypot(hypot(bombPos.x - charPos.x, bombPos.y - charPos.y), bombPos.z - charPos.z);
 							if (distance <= 50.f)
 							{
 								GetGameContext().pInput->SetVibration(1 - (distance / 50), 1 - (distance / 50), GamepadIndex(pChar->GetCharacterNr()));
@@ -602,9 +597,9 @@ void ExamScene::CheckCharacterBombs()
 						
 					}
 					m_VibrationTimer = 0;
-					auto originalSize = bombs->size();
+					size_t originalSize = bombs->size();
 					bombs->erase(std::remove(bombs->begin(), bombs->end(), bomb), bombs->end());
-					auto removedSize = bombs->size();
+					size_t removedSize = bombs->size();
 					if (bomb->GetScene() == this && originalSize > removedSize)
 					{
 						if (m_CanShake)
@@ -614,7 +609,7 @@ void ExamScene::CheckCharacterBombs()
 							m_currShakeTimer = 0;
 							m_CurrTimeUntilShake = 0;
 						}
-						auto createdEmitter = new ExplosionEmitter{ bomb->GetTransform()->GetPosition(), bomb->GetRangeVector() };
+						ExplosionEmitter* createdEmitter = new ExplosionEmitter{ bomb->GetTransform()->GetPosition(), bomb->GetRangeVector() };
 						AddChild(createdEmitter);
 						m_VecEmitters.push_back(createdEmitter);
 						RemoveChild(bomb, true);
@@ -713,7 +708,7 @@ void ExamScene::CheckCharacterBombs()
 	{
 		if (m_VecCharacters.size() == 1)
 		{
-			auto character = m_VecCharacters[0];
+			ExamCharacter* character = m_VecCharacters[0];
 			int charNr = character->GetCharacterNr();
 			InputAction unpause{};
 			m_pWinCharacter = character;
@@ -851,11 +846,11 @@ void ExamScene::HandlePowerUp(DirectX::XMFLOAT3 pos)
 	int rand = std::rand() % (100 + 1);
 	if (rand > 90)
 	{
-		auto bombPU = new BombPowerUp(pos, 8);
+		BombPowerUp* bombPU = new BombPowerUp(pos, 8);
 		bombPU->SetOnTriggerCallBack([this](GameObject* trigger, GameObject* otherActor, GameObject::TriggerAction action)
 		{
-			auto overlappingCharacter = dynamic_cast<ExamCharacter*>(otherActor);
-			auto triggerObject = dynamic_cast<BombPowerUp*>(trigger);
+			ExamCharacter* overlappingCharacter = dynamic_cast<ExamCharacter*>(otherActor);
+			BombPowerUp* triggerObject = dynamic_cast<BombPowerUp*>(trigger);
 			if (overlappingCharacter && action == GameObject::TriggerAction::ENTER)
 			{
 				triggerObject->SetHit();
@@ -885,11 +880,11 @@ void ExamScene::HandlePowerUp(DirectX::XMFLOAT3 pos)
 	}
 	else if (rand > 80)
 	{
-		auto rangePU = new RangePowerUp(pos, 9);
+		RangePowerUp* rangePU = new RangePowerUp(pos, 9);
 		rangePU->SetOnTriggerCallBack([this](GameObject* trigger, GameObject* otherActor, GameObject::TriggerAction action)
 		{
-			auto overlappingCharacter = dynamic_cast<ExamCharacter*>(otherActor);
-			auto triggerObject = dynamic_cast<RangePowerUp*>(trigger);
+			ExamCharacter* overlappingCharacter = dynamic_cast<ExamCharacter*>(otherActor);
+			RangePowerUp* triggerObject = dynamic_cast<RangePowerUp*>(trigger);
 			if (overlappingCharacter && action == GameObject::TriggerAction::ENTER)
 			{
 				triggerObject->SetHit();
@@ -1009,19 +1004,19 @@ void ExamScene::Reset()
 
 	ExamCharacter::ResetCharacterNr();
 
-	auto P1 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),0,7,false };
+	ExamCharacter* P1 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),0,7,false };
 	P1->GetTransform()->Translate(-58.5f, 0.f, -58.5f);
 	AddChild(P1);
 	m_VecCharacters.push_back(P1);
 
-	auto P2 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),1,10,false };
+	ExamCharacter* P2 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),1,10,false };
 	P2->GetTransform()->Translate(58.5f, 0, 58.5f);
 	AddChild(P2);
 	m_VecCharacters.push_back(P2);
 
 	if (createdCharacter3)
 	{
-		auto P3 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),2,11,false };
+		ExamCharacter* P3 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),2,11,false };
 		P3->GetTransform()->Translate(-58.5f, 0, 58.5f);
 		AddChild(P3);
 		m_VecCharacters.push_back(P3);
@@ -1029,7 +1024,7 @@ void ExamScene::Reset()
 
 	if (createdCharacter4)
 	{
-		auto P4 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),3,12 ,false };
+		ExamCharacter* P4 = new ExamCharacter{ 4,11,100,m_pCamera->GetComponent<CameraComponent>(),3,12 ,false };
 		P4->GetTransform()->Translate(58.5f, 0, -58.5f);
 		AddChild(P4);
 		m_VecCharacters.push_back(P4);
