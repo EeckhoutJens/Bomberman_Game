@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "vld.h"
+#include <vld.h>
 #include "PhysxManager.h"
 #include "PhysxProxy.h"
 #include "GameObject.h"
@@ -26,7 +26,7 @@
 #include "../OverlordProject/Materials/Shadow/DiffuseMaterial_Shadow.h"
 #include "DebugRenderer.h"
 
-
+//TEST CHANGE FILES
 ExamScene::ExamScene() : GameScene(L"ExamScene") 
 , m_pCamera{nullptr}
 , m_pBgm{nullptr}
@@ -479,7 +479,7 @@ void ExamScene::CreateNewCharacter()
 	
 	if (!createdCharacter3)
 	{
-		//if (GetGameContext().pInput->IsGamepadConnected(GamepadIndex::PlayerThree))
+		if (GetGameContext().pInput->IsGamepadConnected(GamepadIndex::PlayerThree))
 		{
 			//create character
 			auto settings = OverlordGame::GetGameSettings();

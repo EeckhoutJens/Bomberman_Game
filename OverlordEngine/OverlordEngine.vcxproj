@@ -46,11 +46,15 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
+    <IncludePath>C:\Program Files (x86)\Visual Leak Detector\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
+    <IncludePath>C:\Program Files (x86)\Visual Leak Detector\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -58,7 +62,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
