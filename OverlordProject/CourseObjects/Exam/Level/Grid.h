@@ -11,7 +11,7 @@ public:
 	Grid& operator=(const Grid& other) = delete;
 	Grid& operator=(Grid&& other) noexcept = delete;
 
-	std::vector<GameObject*>* GetObjects() { return &m_VecBoxes; }
+	std::vector<GameObject*>* GetGameObjects() { return &m_VecBoxes; }
 
 private:
 	enum class BlockType

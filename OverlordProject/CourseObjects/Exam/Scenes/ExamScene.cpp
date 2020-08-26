@@ -1,15 +1,12 @@
 #include "stdafx.h"
-#include <vld.h>
+#include "vld.h"
 #include "PhysxManager.h"
-#include "PhysxProxy.h"
 #include "GameObject.h"
 #include "Components.h"
-#include "../OverlordProject/Materials/ColorMaterial.h"
 #include "ContentManager.h"
 #include "ExamScene.h"
 #include "SpriteFont.h"
 #include "TextRenderer.h"
-#include "SpriteRenderer.h"
 #include "../Character/ExamCharacter.h"
 #include "FixedCamera.h"
 #include "../Character/Bomb.h"
@@ -20,19 +17,11 @@
 #include "OverlordGame.h"
 #include "SceneManager.h"
 #include "../Level/ExplosionEmitter.h"
-#include "../OverlordProject/Materials/SkinnedDiffuseMaterial.h"
 #include "../OverlordProject/Materials/Shadow/SkinnedDiffuseMaterial_Shadow.h"
 #include "../OverlordProject/Materials/Shadow/DiffuseMaterial_Shadow.h"
 #include "DebugRenderer.h"
 
 ExamScene::ExamScene() : GameScene(L"ExamScene") 
-, m_pCamera{nullptr}
-, m_pBgm{nullptr}
-, m_pBgmGroup{nullptr}
-, m_pBombSound{nullptr}
-, m_pSFXGroup{nullptr}
-, m_pPlaceSound{nullptr}
-, m_pDeathSound{nullptr}
 {
 }
 
@@ -69,8 +58,8 @@ void ExamScene::Initialize()
 	m_pCamera = new FixedCamera{};
 	m_pCamera->AddComponent(new CameraComponent{});
 	AddChild(m_pCamera);
-	CameraComponent* comp = m_pCamera->GetComponent<CameraComponent>();
-	comp->SetActive();
+	CameraComponent* pCameraComponent = m_pCamera->GetComponent<CameraComponent>();
+	pCameraComponent->SetActive();
 	m_pCamera->GetTransform()->Translate(0, 175, -120);
 	m_pCamera->GetTransform()->Rotate(55, 0, 0, true);
 
@@ -83,7 +72,7 @@ void ExamScene::Initialize()
 	diffMatP1->SetLightDirection(context.pShadowMapper->GetLightDirection());
 	context.pMaterialManager->AddMaterial(diffMatP1, 0);
 
-	SkinnedDiffuseMaterial_Shadow* diffMatP2 = new SkinnedDiffuseMaterial_Shadow();
+	SkinnedDiffuseMaterial_Shadow* diffMatP2 = new SkinnedDiffuseMaterial_Shadow(); 
 	diffMatP2->SetDiffuseTexture(L"./Resources/Textures/Character2_diffuse.png");
 	diffMatP2->SetNormalTexture(L"./Resources/Textures/Character_normal.png");
 	diffMatP2->SetLightDirection(context.pShadowMapper->GetLightDirection());
@@ -160,8 +149,8 @@ void ExamScene::Initialize()
 	m_pBorder = new LevelBorder(DirectX::XMFLOAT2(-67.5, -67.5), 135, 135, 9.f, 5);
 
 	AddChild(pGroundObj);
-	auto gridObjectsToAdd = m_pGrid->GetObjects();
-	auto borderObjectsToAdd = m_pBorder->GetObjects();
+	auto gridObjectsToAdd = m_pGrid->GetGameObjects();
+	auto borderObjectsToAdd = m_pBorder->GetGameObjects();
 
 	for (GameObject* pObject : *gridObjectsToAdd)
 	{
@@ -178,19 +167,19 @@ void ExamScene::Initialize()
 
 	//CHARACTERS
 	//*********
-	ExamCharacter* P1 = new ExamCharacter{ 4,11,100,comp,0,7 };
+	ExamCharacter* P1 = new ExamCharacter{ 4,11,100,pCameraComponent,0,7 };
 	P1->GetTransform()->Translate(-58.5f, 0.f, -58.5f);
 	AddChild(P1);
 	m_VecCharacters.push_back(P1);
 
-	ExamCharacter* P2 = new ExamCharacter{ 4,11,100,comp,1,10 };
+	ExamCharacter* P2 = new ExamCharacter{ 4,11,100,pCameraComponent,1,10 };
 	P2->GetTransform()->Translate(58.5f, 0, 58.5f);
 	AddChild(P2);
 	m_VecCharacters.push_back(P2);
 
 	//UI SETUP
 	//********
-	GameSettings settings = OverlordGame::GetGameSettings();
+	const GameSettings settings = OverlordGame::GetGameSettings();
 	m_pFont = ContentManager::Load<SpriteFont>(L"./Resources/SpriteFonts/Magneto.fnt");
 	m_pResultFont = ContentManager::Load<SpriteFont>(L"./Resources/SpriteFonts/Consolas_32.fnt");
 	m_pP1Stats = new GameObject();
@@ -205,7 +194,7 @@ void ExamScene::Initialize()
 	m_pP1Stats->GetTransform()->Translate(0, 0, 0);
 	m_pP2Stats->GetTransform()->Translate(float(settings.Window.Width), 0, 0);
 	m_pP2Stats->GetTransform()->Scale(0.2f, 0.2f, 0.2f);
-	m_pPauseScreen->GetTransform()->Translate(float(settings.Window.Width / 2), float(settings.Window.Height / 2), 0);
+	m_pPauseScreen->GetTransform()->Translate(float(settings.Window.Width) / 2.f, float(settings.Window.Height) / 2.f, 0);
 	
 	AddChild(m_pP1Stats);
 	AddChild(m_pP2Stats);
@@ -564,7 +553,7 @@ void ExamScene::CheckCharacterBombs()
 								else
 								{
 									HandlePowerUp(hitObject->GetTransform()->GetPosition());
-									auto gridObjects = m_pGrid->GetObjects();
+									auto gridObjects = m_pGrid->GetGameObjects();
 									gridObjects->erase(std::remove(gridObjects->begin(), gridObjects->end(), hitObject), gridObjects->end());
 									RemoveChild(hitObject, true);
 									hitObject = nullptr;
@@ -946,7 +935,7 @@ void ExamScene::Reset()
 	}
 	m_VecCharacters.clear();
 
-	auto gridObjectsToRemove = m_pGrid->GetObjects();
+	auto gridObjectsToRemove = m_pGrid->GetGameObjects();
 	for (GameObject* pObject : *gridObjectsToRemove)
 	{
 		if (pObject)
@@ -992,7 +981,7 @@ void ExamScene::Reset()
 
 	m_pGrid = new Grid(DirectX::XMFLOAT2(-58.5f, -58.5f), 135, 135, 14, 14, 9.f, 6, 5);
 
-	auto gridObjectsToAdd = m_pGrid->GetObjects();
+	auto gridObjectsToAdd = m_pGrid->GetGameObjects();
 
 	for (GameObject* pObject : *gridObjectsToAdd)
 	{

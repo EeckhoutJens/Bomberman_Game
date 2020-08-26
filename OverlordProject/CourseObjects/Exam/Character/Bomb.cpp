@@ -20,18 +20,18 @@ void Bomb::Initialize(const GameContext& gameContext)
 {
 	UNREFERENCED_PARAMETER(gameContext);
 	auto physX = PhysxManager::GetInstance()->GetPhysics();
-	auto bombPhysicsMat = physX->createMaterial(1, 1, 0);
+	const auto bombPhysicsMat = physX->createMaterial(1, 1, 0);
 
 	//SETUP MODEL
-	auto bombModel = new ModelComponent{ L"Resources/Meshes/Bomb.ovm" };
+	ModelComponent* bombModel = new ModelComponent{ L"Resources/Meshes/Bomb.ovm" };
 	bombModel->SetMaterial(m_MatID);
-	auto pModelObject = new GameObject();
+	GameObject* pModelObject = new GameObject();
 	pModelObject->AddComponent(bombModel);
 
 	//SETUP RIGID
 	m_pRigid = new RigidBodyComponent(false);
 	std::shared_ptr<physx::PxGeometry> bombGeom(new physx::PxSphereGeometry(3.5f));
-	auto pBombCollider = new ColliderComponent(bombGeom, *bombPhysicsMat);
+	ColliderComponent* pBombCollider = new ColliderComponent(bombGeom, *bombPhysicsMat);
 	m_pRigid->SetKinematic(true);
 	m_pRigid->SetCollisionGroup(CollisionGroupFlag::Group1);
 
@@ -65,18 +65,18 @@ void Bomb::Update(const GameContext& gameContext)
 	m_pSparkObject->GetTransform()->Translate(m_Pos.x, m_Pos.y + 5.75f, m_Pos.z);
 	if (m_MoveBomb && !m_WasAlreadyPushed)
 	{
-		auto scene = this->GetScene();
-		auto examScene = dynamic_cast<ExamScene*>(scene);
+		GameScene* scene = this->GetScene();
+		ExamScene*  examScene = dynamic_cast<ExamScene*>(scene);
 		if (examScene)
 		{
-			auto channelGroup = examScene->GetSFXChannel();
-			auto pushSound = examScene->GetBombSound();
+			auto *channelGroup = examScene->GetSFXChannel();
+			auto *pushSound = examScene->GetBombSound();
 			FMOD::Channel* m_pSFXChannel;
 			SoundManager::GetInstance()->GetSystem()->playSound(pushSound, nullptr, false, &m_pSFXChannel);
 			m_pSFXChannel->setChannelGroup(channelGroup);
 			m_pSFXChannel->setVolume(5.f);
 		}
-		auto currPos = GetTransform()->GetPosition();
+		
 		switch (m_Direction)
 		{
 		case MoveDirection::FORWARD:
@@ -132,12 +132,12 @@ void Bomb::ExecuteRaycast()
 	//*************
 	if (this->GetScene()->GetPhysxProxy()->Raycast(pos, dirRight, m_Range, hit, physx::PxHitFlag::eDEFAULT, filterData))
 	{
-		auto actor = &hit.getAnyHit(0).actor->userData;
+		auto *actor = &hit.getAnyHit(0).actor->userData;
 
 		RigidBodyComponent* component = static_cast<RigidBodyComponent*>(*actor);
 		ControllerComponent* test = static_cast<ControllerComponent*>(*actor);
-		auto obj = component->GetGameObject();
-		auto convertObj = dynamic_cast<IndestructableBox*>(obj);
+		auto *obj = component->GetGameObject();
+		auto *convertObj = dynamic_cast<IndestructableBox*>(obj);
 		
 		if (!convertObj)
 		{
@@ -164,7 +164,7 @@ void Bomb::ExecuteRaycast()
 	//************
 	if (this->GetScene()->GetPhysxProxy()->Raycast(pos2, dirLeft, m_Range, hit, physx::PxHitFlag::eDEFAULT, filterData))
 	{
-		auto actor = &hit.getAnyHit(0).actor->userData;
+		auto *actor = &hit.getAnyHit(0).actor->userData;
 		RigidBodyComponent* component = static_cast<RigidBodyComponent*>(*actor);
 		ControllerComponent* test = static_cast<ControllerComponent*>(*actor);
 		auto obj = component->GetGameObject();

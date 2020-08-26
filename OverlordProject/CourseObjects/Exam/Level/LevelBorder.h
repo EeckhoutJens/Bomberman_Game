@@ -11,7 +11,7 @@ public:
 	LevelBorder& operator=(const LevelBorder& other) = delete;
 	LevelBorder& operator=(LevelBorder&& other) noexcept = delete;
 
-	std::vector<GameObject*>& GetObjects() { return m_VecBoxes; }
+	std::vector<GameObject*>& GetGameObjects() { return m_VecBoxes; }
 
 private:
 	DirectX::XMFLOAT2 m_StartPos;

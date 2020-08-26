@@ -49,8 +49,8 @@ void ExamCharacter::Initialize(const GameContext& gameContext)
 	}
 	//TODO: Create controller
 	UNREFERENCED_PARAMETER(gameContext);
-	auto physX = PhysxManager::GetInstance()->GetInstance()->GetPhysics();
-	auto pControllerMat = physX->createMaterial(0, 0, 0);
+	auto *physX = PhysxManager::GetInstance()->GetInstance()->GetPhysics();
+	auto *pControllerMat = physX->createMaterial(0, 0, 0);
 	m_pController = new ControllerComponent{ pControllerMat,m_Radius,m_Height,0 };
 	m_pController->SetCollisionGroup(CollisionGroupFlag::Group1);
 	AddComponent(m_pController);
@@ -114,7 +114,7 @@ void ExamCharacter::Initialize(const GameContext& gameContext)
 	
 	m_pModel->SetMaterial(m_MatID);
 
-	auto pModelObject = new GameObject();
+	auto *pModelObject = new GameObject();
 	pModelObject->AddComponent(m_pModel);
 	AddChild(pModelObject);
 	pModelObject->GetTransform()->Translate(0, -m_Height / 1.25f, 0);
@@ -147,9 +147,9 @@ void ExamCharacter::Update(const GameContext& gameContext)
 
 	//UPDATE CAMERA
 	using namespace DirectX;
-	auto move = XMFLOAT2(0, 0);
-	auto forward = XMVECTOR{};
-	auto right = XMVECTOR{};
+	XMFLOAT2 move = XMFLOAT2(0, 0);
+	XMVECTOR forward = XMVECTOR{};
+	XMVECTOR right = XMVECTOR{};
 
 		move.y = gameContext.pInput->IsActionTriggered(CharacterInput::FORWARD + m_nrOfInputElements * CharacterNr) ? 1.0f : 0.0f;
 		if (move.y == 0) move.y = -(gameContext.pInput->IsActionTriggered(CharacterInput::BACKWARD + m_nrOfInputElements * CharacterNr) ? 1.0f : 0.0f);
@@ -159,11 +159,11 @@ void ExamCharacter::Update(const GameContext& gameContext)
 		if (move.x == 0) move.x = -(gameContext.pInput->IsActionTriggered(CharacterInput::LEFT + m_nrOfInputElements * CharacterNr) ? 1.0f : 0.0f);
 		if (move.x == 0) move.x = InputManager::GetThumbstickPosition(true,GamepadIndex(CharacterNr)).x;
 
-		auto currSpeed = m_MoveSpeed;
+		float currSpeed = m_MoveSpeed;
 		if (InputManager::IsKeyboardKeyDown(VK_LSHIFT))
 			currSpeed *= m_RotationSpeed;
 
-		auto look = DirectX::XMFLOAT2(0, 0);
+		XMFLOAT2 look = XMFLOAT2(0, 0);
 		if (InputManager::IsMouseButtonDown(VK_LBUTTON))
 		{
 			const auto mouseMove = InputManager::GetMouseMovement();
@@ -179,7 +179,7 @@ void ExamCharacter::Update(const GameContext& gameContext)
 		//CALCULATE TRANSFORMS
 		forward = XMLoadFloat3(&GetTransform()->GetForward());
 		right = XMLoadFloat3(&GetTransform()->GetRight());
-		auto currPos = XMLoadFloat3(&GetTransform()->GetPosition());
+		XMVECTOR currPos = XMLoadFloat3(&GetTransform()->GetPosition());
 
 		currPos += forward * move.y * currSpeed * gameContext.pGameTime->GetElapsed();
 		currPos += right * move.x * currSpeed * gameContext.pGameTime->GetElapsed();
@@ -188,7 +188,7 @@ void ExamCharacter::Update(const GameContext& gameContext)
 	//UPDATE MOVEMENT AND GRAVITY
 
 	//Calculate Direction
-	auto Direction = forward * move.y + right * move.x;
+	XMVECTOR Direction = forward * move.y + right * move.x;
 
 	//Movement
 	if (move.x != 0 || move.y != 0)
@@ -199,8 +199,8 @@ void ExamCharacter::Update(const GameContext& gameContext)
 			m_RunVelocity = m_MaxRunVelocity;
 		}
 
-		auto yVelocity = m_Velocity.y;
-		auto temp = Direction * m_RunVelocity;
+		float yVelocity = m_Velocity.y;
+		XMVECTOR temp = Direction * m_RunVelocity;
 		XMFLOAT3 tempFloat{ 0,0,0 };
 		XMStoreFloat3(&tempFloat, temp);
 		m_Velocity.x = tempFloat.x;
@@ -231,7 +231,7 @@ void ExamCharacter::Update(const GameContext& gameContext)
 
 	m_Velocity.y += m_JumpVelocity;
 
-	auto finalVelocity = m_Velocity;
+	XMFLOAT3 finalVelocity = m_Velocity;
 	finalVelocity.x *= gameContext.pGameTime->GetElapsed();
 	finalVelocity.y *= gameContext.pGameTime->GetElapsed();
 	finalVelocity.z *= gameContext.pGameTime->GetElapsed();
@@ -274,11 +274,11 @@ void ExamCharacter::Update(const GameContext& gameContext)
 			if (int(m_VecBombs.size()) < m_MaxNrOfBombs)
 			{
 				bool canPlaceBomb{ true };
-				auto characterPos = this->GetTransform()->GetPosition();
+				XMFLOAT3 characterPos = this->GetTransform()->GetPosition();
 				for (Bomb* pBomb : m_VecBombs)
 				{
-					auto bombPos = pBomb->GetTransform()->GetPosition();
-					auto distance = hypot(hypot(bombPos.x - characterPos.x, bombPos.y - characterPos.y), bombPos.z - characterPos.z);
+					XMFLOAT3 bombPos = pBomb->GetTransform()->GetPosition();
+					float distance = hypot(hypot(bombPos.x - characterPos.x, bombPos.y - characterPos.y), bombPos.z - characterPos.z);
 					if (distance < 10)
 					{
 						canPlaceBomb = false;
@@ -302,11 +302,11 @@ void ExamCharacter::Update(const GameContext& gameContext)
 	//PUSH BOMB
 	if (GetScene()->GetGameContext().pInput->IsActionTriggered(CharacterInput::PUSH + m_nrOfInputElements * CharacterNr))
 	{
-		auto charPos = GetTransform()->GetPosition();
+		XMFLOAT3 charPos = GetTransform()->GetPosition();
 		for (Bomb* pBomb : m_VecBombs)
 		{
-			auto bombPos = pBomb->GetTransform()->GetPosition();
-			auto distanceToBomb = hypot(hypot(bombPos.x - charPos.x, bombPos.y - charPos.y), bombPos.z - charPos.z);
+			XMFLOAT3 bombPos = pBomb->GetTransform()->GetPosition();
+			float distanceToBomb = hypot(hypot(bombPos.x - charPos.x, bombPos.y - charPos.y), bombPos.z - charPos.z);
 			if (distanceToBomb < m_PushRange)
 			{
 				switch (m_DirectionState)
@@ -337,11 +337,6 @@ void ExamCharacter::Update(const GameContext& gameContext)
 			
 		}
 	}
-
-
-
-
-
 
 
 	if (finalVelocity.x != 0 || finalVelocity.z != 0)
