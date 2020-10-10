@@ -43,7 +43,7 @@ public:
 	void Update(const GameContext& gameContext) override;
 	void PausePlayer();
 	void UnpausePlayer();
-	bool GetSetPaused(){ return setPaused; }
+	bool GetSetPaused(){ return m_SetPaused; }
 	void IncrementNrOfBombs()
 	{
 		if (m_MaxNrOfBombs < 4)
@@ -61,12 +61,12 @@ public:
 	void SetBombRange(float range) { m_BombRange = range; }
 	void SetDead();
 	std::vector<Bomb*>* GetBombs() { return &m_VecBombs; }
-	bool GetShouldDestroy() { return shouldDestroy; }
-	int GetCharacterNr() { return CharacterNr; }
-	int GetNrOfBombs() { return m_MaxNrOfBombs; }
-	int GetRangeMultiplier() { return m_RangeMultiplier; }
-	int GetNrOfInputElements() { return m_nrOfInputElements; }
-	static void ResetCharacterNr() { instanceCount = 0; }
+	bool GetShouldDestroy() const { return m_ShouldDestroy; }
+	int GetCharacterNr() const { return m_CharacterNr; }
+	int GetNrOfBombs() const { return m_MaxNrOfBombs; }
+	int GetRangeMultiplier() const { return m_RangeMultiplier; }
+	int GetNrOfInputElements() const { return m_nrOfInputElements; }
+	static void ResetCharacterNr() { m_InstanceCount = 0; }
 
 private:
 	ControllerComponent* m_pController;
@@ -80,19 +80,19 @@ private:
 	float m_currTimer{};
 	const float m_MaxTimer{ 10.f };
 	UINT m_MatID, m_BombMatID;
-	static int instanceCount;
-	int CharacterNr{};
+	static int m_InstanceCount;
+	int m_CharacterNr{};
 	CharacterDirection m_DirectionState{};
 	std::vector<Bomb*> m_VecBombs{};
 	int m_MaxNrOfBombs{2};
 	float m_BombRange{9.f};
 	int m_RangeMultiplier{3};
-	bool IsDead{false};
-	bool shouldDestroy{false};
-	bool isFirstRound{};
-	bool setPaused{ false };
-	float pauseTimer{};
-	float maxPauseTimer{ 0.2f };
+	bool m_IsDead{false};
+	bool m_ShouldDestroy{false};
+	bool m_IsFirstRound{};
+	bool m_SetPaused{ false };
+	float m_PauseTimer{};
+	float m_MaxPauseTimer{ 0.2f };
 
 	//Running
 	float m_MaxRunVelocity,
@@ -101,7 +101,6 @@ private:
 		m_RunAccelerationTime,
 		m_JumpAccelerationTime,
 		m_RunAcceleration,
-		m_JumpAcceleration,
 		m_RunVelocity,
 		m_JumpVelocity;
 

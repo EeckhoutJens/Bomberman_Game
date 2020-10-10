@@ -9,7 +9,7 @@
 #include "Bomb.h"
 #include "../../../Materials/SkinnedDiffuseMaterial.h"
 
-int ExamCharacter::instanceCount = 0;
+int ExamCharacter::m_InstanceCount = 0;
 
 ExamCharacter::ExamCharacter(float radius, float height, float moveSpeed, CameraComponent* pCamera, UINT matID, UINT bombMatID, bool firstRound) :
 m_Radius(radius),
@@ -31,22 +31,22 @@ m_Gravity(9.81f),
 m_RunAccelerationTime(0.3f),
 m_JumpAccelerationTime(0.8f),
 m_RunAcceleration(m_MaxRunVelocity / m_RunAccelerationTime),
-m_JumpAcceleration(m_Gravity / m_JumpAccelerationTime),
 m_RunVelocity(0),
 m_JumpVelocity(0),
 m_Velocity(0, 0, 0),
-isFirstRound{firstRound}
+m_IsFirstRound{firstRound}
 {
-	CharacterNr = instanceCount;
-	instanceCount++;
+	m_CharacterNr = m_InstanceCount;
+	m_InstanceCount++;
 }
 
 void ExamCharacter::Initialize(const GameContext& gameContext)
 {
-	if (CharacterNr == 0)
+	if (m_CharacterNr == 0)
 	{
 		ControllerComponent::ResetInstanceCount();
 	}
+	
 	//TODO: Create controller
 	UNREFERENCED_PARAMETER(gameContext);
 	auto *physX = PhysxManager::GetInstance()->GetInstance()->GetPhysics();
@@ -56,15 +56,15 @@ void ExamCharacter::Initialize(const GameContext& gameContext)
 	AddComponent(m_pController);
 
 	//TODO: Register all Input Actions
-	if (CharacterNr == 0 && isFirstRound)
+	if (m_CharacterNr == 0 && m_IsFirstRound)
 	{
-		InputAction forward{ CharacterInput::FORWARD,InputTriggerState::Down,'W',-1,0,(GamepadIndex)CharacterNr };
-		InputAction backward{ CharacterInput::BACKWARD,InputTriggerState::Down,'S',-1,0,(GamepadIndex)CharacterNr };
-		InputAction left{ CharacterInput::LEFT,InputTriggerState::Down,'A', -1,0,(GamepadIndex)CharacterNr };
-		InputAction right{ CharacterInput::RIGHT,InputTriggerState::Down,'D', -1,0,(GamepadIndex)CharacterNr };
-		InputAction bomb{ CharacterInput::BOMB,InputTriggerState::Pressed,' ', -1,XINPUT_GAMEPAD_A,(GamepadIndex)CharacterNr };
-		InputAction push{ CharacterInput::PUSH,InputTriggerState::Released,'Q', -1,XINPUT_GAMEPAD_B,(GamepadIndex)CharacterNr };
-		InputAction pause{ CharacterInput::PAUSE,InputTriggerState::Pressed, VK_ESCAPE,-1,XINPUT_GAMEPAD_START,(GamepadIndex)CharacterNr };
+		InputAction forward{ CharacterInput::FORWARD,InputTriggerState::Down,'W',-1,0,(GamepadIndex)m_CharacterNr };
+		InputAction backward{ CharacterInput::BACKWARD,InputTriggerState::Down,'S',-1,0,(GamepadIndex)m_CharacterNr };
+		InputAction left{ CharacterInput::LEFT,InputTriggerState::Down,'A', -1,0,(GamepadIndex)m_CharacterNr };
+		InputAction right{ CharacterInput::RIGHT,InputTriggerState::Down,'D', -1,0,(GamepadIndex)m_CharacterNr };
+		InputAction bomb{ CharacterInput::BOMB,InputTriggerState::Pressed,' ', -1,XINPUT_GAMEPAD_A,(GamepadIndex)m_CharacterNr };
+		InputAction push{ CharacterInput::PUSH,InputTriggerState::Released,'Q', -1,XINPUT_GAMEPAD_B,(GamepadIndex)m_CharacterNr };
+		InputAction pause{ CharacterInput::PAUSE,InputTriggerState::Pressed, VK_ESCAPE,-1,XINPUT_GAMEPAD_START,(GamepadIndex)m_CharacterNr };
 		gameContext.pInput->AddInputAction(forward);
 		gameContext.pInput->AddInputAction(backward);
 		gameContext.pInput->AddInputAction(left);
@@ -73,15 +73,15 @@ void ExamCharacter::Initialize(const GameContext& gameContext)
 		gameContext.pInput->AddInputAction(push);
 		gameContext.pInput->AddInputAction(pause);
 	}
-	if (CharacterNr == 1 && isFirstRound)
+	if (m_CharacterNr == 1 && m_IsFirstRound)
 	{
-		InputAction forward2{ int(CharacterInput::FORWARD + m_nrOfInputElements * CharacterNr),InputTriggerState::Down,VK_UP,-1,0,(GamepadIndex)CharacterNr };
-		InputAction backward2{ int(CharacterInput::BACKWARD + m_nrOfInputElements * CharacterNr),InputTriggerState::Down,VK_DOWN,-1,0,(GamepadIndex)CharacterNr };
-		InputAction left2{ int(CharacterInput::LEFT + m_nrOfInputElements * CharacterNr),InputTriggerState::Down,VK_LEFT, -1,0,(GamepadIndex)CharacterNr };
-		InputAction right2{ int(CharacterInput::RIGHT + m_nrOfInputElements * CharacterNr),InputTriggerState::Down,VK_RIGHT, -1,0,(GamepadIndex)CharacterNr };
-		InputAction bomb2{ int(CharacterInput::BOMB + m_nrOfInputElements * CharacterNr),InputTriggerState::Released,VK_RCONTROL, -1,XINPUT_GAMEPAD_A,(GamepadIndex)CharacterNr };
-		InputAction push2{ int(CharacterInput::PUSH + m_nrOfInputElements * CharacterNr),InputTriggerState::Released,VK_RSHIFT,-1,XINPUT_GAMEPAD_B,(GamepadIndex)CharacterNr };
-		InputAction pause2{ int(CharacterInput::PAUSE + m_nrOfInputElements * CharacterNr),InputTriggerState::Released,-1,-1,XINPUT_GAMEPAD_START,(GamepadIndex)CharacterNr };
+		InputAction forward2{ int(CharacterInput::FORWARD + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Down,VK_UP,-1,0,(GamepadIndex)m_CharacterNr };
+		InputAction backward2{ int(CharacterInput::BACKWARD + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Down,VK_DOWN,-1,0,(GamepadIndex)m_CharacterNr };
+		InputAction left2{ int(CharacterInput::LEFT + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Down,VK_LEFT, -1,0,(GamepadIndex)m_CharacterNr };
+		InputAction right2{ int(CharacterInput::RIGHT + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Down,VK_RIGHT, -1,0,(GamepadIndex)m_CharacterNr };
+		InputAction bomb2{ int(CharacterInput::BOMB + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Released,VK_RCONTROL, -1,XINPUT_GAMEPAD_A,(GamepadIndex)m_CharacterNr };
+		InputAction push2{ int(CharacterInput::PUSH + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Released,VK_RSHIFT,-1,XINPUT_GAMEPAD_B,(GamepadIndex)m_CharacterNr };
+		InputAction pause2{ int(CharacterInput::PAUSE + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Released,-1,-1,XINPUT_GAMEPAD_START,(GamepadIndex)m_CharacterNr };
 
 		gameContext.pInput->AddInputAction(forward2);
 		gameContext.pInput->AddInputAction(backward2);
@@ -91,15 +91,15 @@ void ExamCharacter::Initialize(const GameContext& gameContext)
 		gameContext.pInput->AddInputAction(push2);
 		gameContext.pInput->AddInputAction(pause2);
 	}
-	if(isFirstRound && CharacterNr > 1)
+	if(m_IsFirstRound && m_CharacterNr > 1)
 	{
-		InputAction forward2{ int(CharacterInput::FORWARD + m_nrOfInputElements * CharacterNr),InputTriggerState::Down,-1,-1,0,(GamepadIndex)CharacterNr };
-		InputAction backward2{ int(CharacterInput::BACKWARD + m_nrOfInputElements * CharacterNr),InputTriggerState::Down,-1,-1,0,(GamepadIndex)CharacterNr };
-		InputAction left2{ int(CharacterInput::LEFT + m_nrOfInputElements * CharacterNr),InputTriggerState::Down,-1, -1,0,(GamepadIndex)CharacterNr };
-		InputAction right2{ int(CharacterInput::RIGHT + m_nrOfInputElements * CharacterNr),InputTriggerState::Down,-1, -1,0,(GamepadIndex)CharacterNr };
-		InputAction bomb2{ int(CharacterInput::BOMB + m_nrOfInputElements * CharacterNr),InputTriggerState::Released,-1, -1,XINPUT_GAMEPAD_A,(GamepadIndex)CharacterNr };
-		InputAction push2{ int(CharacterInput::PUSH + m_nrOfInputElements * CharacterNr),InputTriggerState::Released,-1, -1,XINPUT_GAMEPAD_B,(GamepadIndex)CharacterNr };
-		InputAction pause2{ int(CharacterInput::PAUSE + m_nrOfInputElements * CharacterNr),InputTriggerState::Released,-1,-1,XINPUT_GAMEPAD_START,(GamepadIndex)CharacterNr };
+		InputAction forward2{ int(CharacterInput::FORWARD + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Down,-1,-1,0,(GamepadIndex)m_CharacterNr };
+		InputAction backward2{ int(CharacterInput::BACKWARD + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Down,-1,-1,0,(GamepadIndex)m_CharacterNr };
+		InputAction left2{ int(CharacterInput::LEFT + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Down,-1, -1,0,(GamepadIndex)m_CharacterNr };
+		InputAction right2{ int(CharacterInput::RIGHT + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Down,-1, -1,0,(GamepadIndex)m_CharacterNr };
+		InputAction bomb2{ int(CharacterInput::BOMB + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Released,-1, -1,XINPUT_GAMEPAD_A,(GamepadIndex)m_CharacterNr };
+		InputAction push2{ int(CharacterInput::PUSH + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Released,-1, -1,XINPUT_GAMEPAD_B,(GamepadIndex)m_CharacterNr };
+		InputAction pause2{ int(CharacterInput::PAUSE + m_nrOfInputElements * m_CharacterNr),InputTriggerState::Released,-1,-1,XINPUT_GAMEPAD_START,(GamepadIndex)m_CharacterNr };
 
 		gameContext.pInput->AddInputAction(forward2);
 		gameContext.pInput->AddInputAction(backward2);
@@ -130,19 +130,19 @@ void ExamCharacter::Update(const GameContext& gameContext)
 {
 	//TODO: Update the character (Camera rotation, Character Movement, Character Gravity)
 
-	if (IsDead)
+	if (m_IsDead)
 	{
 		if (!m_pModel->GetAnimator()->GetPlayOnce())
 		{
 			m_pModel->GetAnimator()->Pause();
-			shouldDestroy = true;
+			m_ShouldDestroy = true;
 		}
 			
 		return;
 	}
 
 	//UPDATE PAUSE TIMER
-	pauseTimer += gameContext.pGameTime->GetElapsed();
+	m_PauseTimer += gameContext.pGameTime->GetElapsed();
 
 
 	//UPDATE CAMERA
@@ -151,13 +151,13 @@ void ExamCharacter::Update(const GameContext& gameContext)
 	XMVECTOR forward = XMVECTOR{};
 	XMVECTOR right = XMVECTOR{};
 
-		move.y = gameContext.pInput->IsActionTriggered(CharacterInput::FORWARD + m_nrOfInputElements * CharacterNr) ? 1.0f : 0.0f;
-		if (move.y == 0) move.y = -(gameContext.pInput->IsActionTriggered(CharacterInput::BACKWARD + m_nrOfInputElements * CharacterNr) ? 1.0f : 0.0f);
-		if (move.y == 0) move.y = InputManager::GetThumbstickPosition(true,GamepadIndex(CharacterNr)).y;
+		move.y = gameContext.pInput->IsActionTriggered(CharacterInput::FORWARD + m_nrOfInputElements * m_CharacterNr) ? 1.0f : 0.0f;
+		if (move.y == 0) move.y = -(gameContext.pInput->IsActionTriggered(CharacterInput::BACKWARD + m_nrOfInputElements * m_CharacterNr) ? 1.0f : 0.0f);
+		if (move.y == 0) move.y = InputManager::GetThumbstickPosition(true,GamepadIndex(m_CharacterNr)).y;
 
-		move.x = gameContext.pInput->IsActionTriggered(CharacterInput::RIGHT + m_nrOfInputElements * CharacterNr) ? 1.0f : 0.0f;
-		if (move.x == 0) move.x = -(gameContext.pInput->IsActionTriggered(CharacterInput::LEFT + m_nrOfInputElements * CharacterNr) ? 1.0f : 0.0f);
-		if (move.x == 0) move.x = InputManager::GetThumbstickPosition(true,GamepadIndex(CharacterNr)).x;
+		move.x = gameContext.pInput->IsActionTriggered(CharacterInput::RIGHT + m_nrOfInputElements * m_CharacterNr) ? 1.0f : 0.0f;
+		if (move.x == 0) move.x = -(gameContext.pInput->IsActionTriggered(CharacterInput::LEFT + m_nrOfInputElements * m_CharacterNr) ? 1.0f : 0.0f);
+		if (move.x == 0) move.x = InputManager::GetThumbstickPosition(true,GamepadIndex(m_CharacterNr)).x;
 
 		float currSpeed = m_MoveSpeed;
 		if (InputManager::IsKeyboardKeyDown(VK_LSHIFT))
@@ -257,19 +257,19 @@ void ExamCharacter::Update(const GameContext& gameContext)
 
 
 	//SET PAUSED
-	if (GetScene()->GetGameContext().pInput->IsActionTriggered(CharacterInput::PAUSE + m_nrOfInputElements * CharacterNr))
+	if (GetScene()->GetGameContext().pInput->IsActionTriggered(CharacterInput::PAUSE + m_nrOfInputElements * m_CharacterNr))
 	{
-		if (pauseTimer >= maxPauseTimer)
+		if (m_PauseTimer >= m_MaxPauseTimer)
 		{
-			setPaused = true;
+			m_SetPaused = true;
 		}
 	}
 
 
 	//PLACE BOMB
-	if (GetScene()->GetGameContext().pInput->IsActionTriggered(CharacterInput::BOMB + m_nrOfInputElements * CharacterNr))
+	if (GetScene()->GetGameContext().pInput->IsActionTriggered(CharacterInput::BOMB + m_nrOfInputElements * m_CharacterNr))
 	{
-		if (pauseTimer >= maxPauseTimer)
+		if (m_PauseTimer >= m_MaxPauseTimer)
 		{
 			if (int(m_VecBombs.size()) < m_MaxNrOfBombs)
 			{
@@ -300,7 +300,7 @@ void ExamCharacter::Update(const GameContext& gameContext)
 
 
 	//PUSH BOMB
-	if (GetScene()->GetGameContext().pInput->IsActionTriggered(CharacterInput::PUSH + m_nrOfInputElements * CharacterNr))
+	if (GetScene()->GetGameContext().pInput->IsActionTriggered(CharacterInput::PUSH + m_nrOfInputElements * m_CharacterNr))
 	{
 		XMFLOAT3 charPos = GetTransform()->GetPosition();
 		for (Bomb* pBomb : m_VecBombs)
@@ -421,14 +421,14 @@ void ExamCharacter::UnpausePlayer()
 	{
 		bomb->SetActive(true);
 	}
-	setPaused = false;
+	m_SetPaused = false;
 	this->SetActive(true);
-	pauseTimer = 0;
+	m_PauseTimer = 0;
 }
 
 void ExamCharacter::SetDead()
 {
-	IsDead = true;
+	m_IsDead = true;
 	if (!(m_pModel->GetAnimator()->GetClipName() == L"Death"))
 	{
 		m_pModel->GetAnimator()->SetAnimationSpeed(1.0f);
