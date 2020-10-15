@@ -20,5 +20,7 @@ private:
 	UINT m_bombPUMat;
 	bool m_WasHit{false};
 	DirectX::XMFLOAT3 m_Pos;
+	const float m_YPosOffset{ -7.75f };
+	const float m_Scale{0.2f};
 };
 

@@ -13,6 +13,7 @@ KeyboardControlScreen::KeyboardControlScreen() : GameScene(L"KeyboardControlScre
 
 void KeyboardControlScreen::Initialize()
 {
+	//ADD SPRITE, SET PIVOT AND PUT IT TO CENTER OF THE SCREEN
 	m_pControlScreenSprite = new GameObject();
 	m_pControlScreenSprite->AddComponent(new SpriteComponent(L"./Resources/Textures/KeyboardControls.png", DirectX::XMFLOAT2(0.5f, 0.5f)));
 	AddChild(m_pControlScreenSprite);

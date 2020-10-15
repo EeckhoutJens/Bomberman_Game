@@ -36,10 +36,11 @@ ExamScene::~ExamScene()
 
 void ExamScene::Initialize()
 {
+	//SET UP LIGHT
+	//*************
 	std::srand(unsigned int(std::time(0)));
 	GameContext context = GetGameContext();
 	context.pShadowMapper->SetLight({ 0,150.f,-40.f }, { 0.740129888f, -0.497205281f, -0.609117377f });
-	//this->GetPhysxProxy()->EnablePhysxDebugRendering(true);
 	DebugRenderer::ToggleDebugRenderer();
 
 	//GROUND PLANE
@@ -218,34 +219,6 @@ void ExamScene::Update()
 
 	if (!m_IsPaused && !m_EndGame)
 	{
-		if (m_IsShaking)
-		{
-			m_currShakeTimer += GetGameContext().pGameTime->GetElapsed();
-			if (m_currShakeTimer < 0.75f)
-			{
-
-				float shakeValue = m_Amplitude * std::sin(2 * DirectX::XM_PI * m_Frequency * m_currShakeTimer);
-				m_pCamera->GetTransform()->Rotate(55.f, 0, shakeValue / 2.f);
-			}
-
-			else
-			{
-				m_pCamera->GetTransform()->Rotate(55.f, 0.f, 0.f);
-				m_IsShaking = false;
-			}
-				
-		}
-		
-		if (!m_CanShake)
-		{
-			m_CurrTimeUntilShake += GetGameContext().pGameTime->GetElapsed();
-			if (m_CurrTimeUntilShake >= m_MaxTimeUntilShake)
-			{
-				m_CanShake = true;
-			}
-		}
-
-		
 		GetGameContext().pInput->RefreshControllerConnections();
 		CreateNewCharacter();
 		CheckCharacterBombs();
@@ -1088,4 +1061,35 @@ void ExamScene::Pause()
 			}
 			m_IsPaused = true;
 			return;
+}
+
+void ExamScene::CheckCameraShake()
+{
+	//CAMERA SHAKE
+	if (m_IsShaking)
+	{
+		m_currShakeTimer += GetGameContext().pGameTime->GetElapsed();
+		if (m_currShakeTimer < 0.75f)
+		{
+
+			float shakeValue = m_Amplitude * std::sin(2 * DirectX::XM_PI * m_Frequency * m_currShakeTimer);
+			m_pCamera->GetTransform()->Rotate(55.f, 0, shakeValue / 2.f);
+		}
+
+		else
+		{
+			m_pCamera->GetTransform()->Rotate(55.f, 0.f, 0.f);
+			m_IsShaking = false;
+		}
+
+	}
+
+	if (!m_CanShake)
+	{
+		m_CurrTimeUntilShake += GetGameContext().pGameTime->GetElapsed();
+		if (m_CurrTimeUntilShake >= m_MaxTimeUntilShake)
+		{
+			m_CanShake = true;
+		}
+	}
 }

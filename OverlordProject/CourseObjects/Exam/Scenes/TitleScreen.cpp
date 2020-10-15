@@ -15,11 +15,13 @@ TitleScreen::TitleScreen() : GameScene(L"TitleScreen")
 
 void TitleScreen::Initialize()
 {
+	//ADD SPRITE, SET PIVOT AND PUT IT TO CENTER OF THE SCREEN
 	m_pTitleScreenSprite = new GameObject();
 	m_pTitleScreenSprite->AddComponent(new SpriteComponent(L"./Resources/Textures/TitleScreen.png",DirectX::XMFLOAT2(0.5f,0.5f)));
 	AddChild(m_pTitleScreenSprite);
 	m_pTitleScreenSprite->GetTransform()->Translate(640, 360, 0);
 
+	//ADD SPRITE, SET PIVOT AND PUT IT NEXT TO START OPTION
 	m_pCursorSprite = new GameObject();
 	m_pCursorSprite->AddComponent(new SpriteComponent(L"./Resources/Textures/BombCursorP3.png",DirectX::XMFLOAT2(0.5f,0.5f)));
 	AddChild(m_pCursorSprite);
@@ -27,7 +29,7 @@ void TitleScreen::Initialize()
 	m_pCursorSprite->GetTransform()->Translate(m_CursorPosStart);
 
 
-
+	//SET UP INPUT
 	InputAction iaStart{ 0,InputTriggerState::Pressed,VK_SPACE,-1,XINPUT_GAMEPAD_START,GamepadIndex::PlayerOne };
 	InputAction iaUp{ 1,InputTriggerState::Released,'W',-1,XINPUT_GAMEPAD_DPAD_UP,GamepadIndex::PlayerOne };
 	InputAction iaDown{ 2,InputTriggerState::Released,'S',-1,XINPUT_GAMEPAD_DPAD_DOWN,GamepadIndex::PlayerOne };

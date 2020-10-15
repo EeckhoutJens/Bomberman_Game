@@ -30,10 +30,15 @@ public:
 	std::vector<float> GetRangeVector() { return m_VecRanges; }
 
 private:
+	
+	//VARIABLES
 	DirectX::XMFLOAT3 m_Pos;
 	float m_Range, m_CurrTime;
 	const float m_MaxTime{ 2.f };
 	const float m_PosOffset{ 4.f };
+	const float m_BombRange{ 9.f };
+	const float m_BombForce{40.f};
+	const float m_ParticleOffset{5.75f};
 	UINT m_MatID;
 	bool m_DestroyBomb{ false };
 	bool m_MoveBomb{};
@@ -44,5 +49,10 @@ private:
 	std::vector<float> m_VecRanges{};
 	MoveDirection m_Direction{MoveDirection::FORWARD};
 	GameObject* m_pSparkObject = nullptr;
+
+	//FUNCTIONS
+	void ExecuteBombPush();
+	void XRayCast(const physx::PxVec3& pos, const physx::PxVec3& dir);
+	void ZRayCast(const physx::PxVec3& pos, const physx::PxVec3& dir);
 };
 

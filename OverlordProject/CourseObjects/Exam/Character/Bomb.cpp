@@ -62,53 +62,16 @@ void Bomb::Initialize(const GameContext& gameContext)
 
 void Bomb::Update(const GameContext& gameContext)
 {
-	m_pSparkObject->GetTransform()->Translate(m_Pos.x, m_Pos.y + 5.75f, m_Pos.z);
+	//UPDATE PARTICLE
+	m_pSparkObject->GetTransform()->Translate(m_Pos.x, m_Pos.y + m_ParticleOffset, m_Pos.z);
+	
+	//CHECK IF BOMBPUSH HAS BEEN FIRED FROM PLAYER CHARACTER
 	if (m_MoveBomb && !m_WasAlreadyPushed)
 	{
-		GameScene* scene = this->GetScene();
-		ExamScene*  examScene = dynamic_cast<ExamScene*>(scene);
-		if (examScene)
-		{
-			auto *channelGroup = examScene->GetSFXChannel();
-			auto *pushSound = examScene->GetBombSound();
-			FMOD::Channel* m_pSFXChannel;
-			SoundManager::GetInstance()->GetSystem()->playSound(pushSound, nullptr, false, &m_pSFXChannel);
-			m_pSFXChannel->setChannelGroup(channelGroup);
-			m_pSFXChannel->setVolume(5.f);
-		}
-		
-		switch (m_Direction)
-		{
-		case MoveDirection::FORWARD:
-			m_pRigid->SetKinematic(false);
-			m_pRigid->AddForce(physx::PxVec3(0, 0, 40), physx::PxForceMode::eIMPULSE);
-			m_MoveBomb = false;
-			m_WasAlreadyPushed = true;
-			break;
-
-		case MoveDirection::BACKWARD:
-			m_pRigid->SetKinematic(false);
-			m_pRigid->AddForce(physx::PxVec3(0, 0, -40), physx::PxForceMode::eIMPULSE);
-			m_MoveBomb = false;
-			m_WasAlreadyPushed = true;
-			break;
-
-		case MoveDirection::LEFT:
-			m_pRigid->SetKinematic(false);
-			m_pRigid->AddForce(physx::PxVec3(-40, 0, 0), physx::PxForceMode::eIMPULSE);
-			m_MoveBomb = false;
-			m_WasAlreadyPushed = true;
-			break;
-
-		case MoveDirection::RIGHT:
-			m_pRigid->SetKinematic(false);
-			m_pRigid->AddForce(physx::PxVec3(40, 0, 0), physx::PxForceMode::eIMPULSE);
-			m_MoveBomb = false;
-			m_WasAlreadyPushed = true;
-			break;
-		}
+		ExecuteBombPush();
 	}
 
+	//UPDATE BOMB
 	m_Pos = GetTransform()->GetPosition();
 	m_CurrTime += gameContext.pGameTime->GetElapsed();
 	if (m_CurrTime >= m_MaxTime)
@@ -117,138 +80,137 @@ void Bomb::Update(const GameContext& gameContext)
 
 void Bomb::ExecuteRaycast()
 {
-	physx::PxQueryFilterData filterData;
-	filterData.data.word0 = physx::PxU32(CollisionGroupFlag::Group1);
-	filterData.data.word1 = physx::PxU32(CollisionGroupFlag::Group5);
 
-	physx::PxRaycastBuffer hit;
 	physx::PxVec3 dirUp{ 0,0,1 }, dirDown{ 0,0,-1 }, dirLeft{ -1,0,0 }, dirRight{ 1,0,0 };
 	physx::PxVec3 pos{ m_Pos.x + m_PosOffset,m_Pos.y,m_Pos.z };
 	physx::PxVec3 pos2{ m_Pos.x - m_PosOffset,m_Pos.y,m_Pos.z };
 	physx::PxVec3 pos3{ m_Pos.x,m_Pos.y,m_Pos.z + m_PosOffset };
 	physx::PxVec3 pos4{ m_Pos.x,m_Pos.y,m_Pos.z - m_PosOffset };
 
-	//RIGHT RAYCAST
-	//*************
-	if (this->GetScene()->GetPhysxProxy()->Raycast(pos, dirRight, m_Range, hit, physx::PxHitFlag::eDEFAULT, filterData))
-	{
-		auto *actor = &hit.getAnyHit(0).actor->userData;
-
-		RigidBodyComponent* component = static_cast<RigidBodyComponent*>(*actor);
-		ControllerComponent* test = static_cast<ControllerComponent*>(*actor);
-		auto *obj = component->GetGameObject();
-		auto *convertObj = dynamic_cast<IndestructableBox*>(obj);
-		
-		if (!convertObj)
-		{
-			if (test->GetGroupFlag() == CollisionGroupFlag::Group1)
-			{
-				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().x - GetTransform()->GetPosition().x) + 9.f);
-				m_VecHitObjects.push_back(obj);
-			}
-
-			else if ((component->GetCollisionFlag() == CollisionGroupFlag::Group1))
-			{
-				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().x - GetTransform()->GetPosition().x) + 9.f);
-				m_VecHitObjects.push_back(obj);
-			}
-		}
-		else
-			m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().x - GetTransform()->GetPosition().x) + 9.f);
-	}
-	else
-		m_VecRanges.push_back(m_Range);
-	
-
-	//LEFT RAYCAST
-	//************
-	if (this->GetScene()->GetPhysxProxy()->Raycast(pos2, dirLeft, m_Range, hit, physx::PxHitFlag::eDEFAULT, filterData))
-	{
-		auto *actor = &hit.getAnyHit(0).actor->userData;
-		RigidBodyComponent* component = static_cast<RigidBodyComponent*>(*actor);
-		ControllerComponent* test = static_cast<ControllerComponent*>(*actor);
-		auto obj = component->GetGameObject();
-		auto convertObj = dynamic_cast<IndestructableBox*>(obj);
-		if (!convertObj)
-		{
-			if (test->GetGroupFlag() == CollisionGroupFlag::Group1)
-			{
-				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().x - GetTransform()->GetPosition().x) + 9.f);
-				m_VecHitObjects.push_back(obj);
-			}
-
-			else if ((component->GetCollisionFlag() == CollisionGroupFlag::Group1))
-			{
-				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().x - GetTransform()->GetPosition().x) + 9.f);
-				m_VecHitObjects.push_back(obj);
-			}
-		}
-		else
-			m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().x - GetTransform()->GetPosition().x) + 9.f);
-	}
-	else
-		m_VecRanges.push_back(m_Range);
-	
-
-	//UP RAYCAST
-	//**********
-	if (this->GetScene()->GetPhysxProxy()->Raycast(pos3, dirUp, m_Range, hit, physx::PxHitFlag::eDEFAULT, filterData))
-	{
-		auto actor = &hit.getAnyHit(0).actor->userData;
-		RigidBodyComponent* component = static_cast<RigidBodyComponent*>(*actor);
-		ControllerComponent* test = static_cast<ControllerComponent*>(*actor);
-		auto obj = component->GetGameObject();
-		auto convertObj = dynamic_cast<IndestructableBox*>(obj);
-		if (!convertObj)
-		{
-			if (test->GetGroupFlag() == CollisionGroupFlag::Group1)
-			{
-				m_VecHitObjects.push_back(obj);
-				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().z - GetTransform()->GetPosition().z) + 9.f);
-			}
-
-			else if ((component->GetCollisionFlag() == CollisionGroupFlag::Group1))
-			{
-
-				m_VecHitObjects.push_back(obj);
-				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().z - GetTransform()->GetPosition().z) + 9.f);
-			}
-		}
-		else
-			m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().z - GetTransform()->GetPosition().z) + 9.f);
-	}
-	else
-		m_VecRanges.push_back(m_Range);
-
-	//DOWN RAYCAST
-	//************
-	if (this->GetScene()->GetPhysxProxy()->Raycast(pos4, dirDown, m_Range, hit, physx::PxHitFlag::eDEFAULT, filterData))
-	{
-
-		auto actor = &hit.getAnyHit(0).actor->userData;
-		RigidBodyComponent* component = static_cast<RigidBodyComponent*>(*actor);
-		ControllerComponent* test = static_cast<ControllerComponent*>(*actor);
-		auto obj = component->GetGameObject();
-		auto convertObj = dynamic_cast<IndestructableBox*>(obj);
-		if (!convertObj)
-		{
-			if (test->GetGroupFlag() == CollisionGroupFlag::Group1)
-			{
-				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().z - GetTransform()->GetPosition().z) + 9.f);
-				m_VecHitObjects.push_back(obj);
-			}
-
-			else if ((component->GetCollisionFlag() == CollisionGroupFlag::Group1))
-			{
-				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().z - GetTransform()->GetPosition().z) + 9.f);
-				m_VecHitObjects.push_back(obj);
-			}
-		}
-		else
-			m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().z - GetTransform()->GetPosition().z) + 9.f);
-	}
-	else
-		m_VecRanges.push_back(m_Range);
+	XRayCast(pos, dirRight);
+	XRayCast(pos2, dirLeft);
+	ZRayCast(pos3, dirUp);
+	ZRayCast(pos4, dirDown);
 	m_DestroyBomb = true;
+}
+
+void Bomb::ExecuteBombPush()
+{
+	//GET SCENE AND PLAY SFX
+	GameScene* scene = this->GetScene();
+	ExamScene* examScene = dynamic_cast<ExamScene*>(scene);
+	if (examScene)
+	{
+		auto* channelGroup = examScene->GetSFXChannel();
+		auto* pushSound = examScene->GetBombSound();
+		FMOD::Channel* m_pSFXChannel;
+		SoundManager::GetInstance()->GetSystem()->playSound(pushSound, nullptr, false, &m_pSFXChannel);
+		m_pSFXChannel->setChannelGroup(channelGroup);
+		m_pSFXChannel->setVolume(5.f);
+	}
+
+	//ADD FORCE ACCORDING TO DIRECTION
+	switch (m_Direction)
+	{
+	case MoveDirection::FORWARD:
+		m_pRigid->SetKinematic(false);
+		m_pRigid->AddForce(physx::PxVec3(0, 0, m_BombForce), physx::PxForceMode::eIMPULSE);
+		m_MoveBomb = false;
+		m_WasAlreadyPushed = true;
+		break;
+
+	case MoveDirection::BACKWARD:
+		m_pRigid->SetKinematic(false);
+		m_pRigid->AddForce(physx::PxVec3(0, 0, -m_BombForce), physx::PxForceMode::eIMPULSE);
+		m_MoveBomb = false;
+		m_WasAlreadyPushed = true;
+		break;
+
+	case MoveDirection::LEFT:
+		m_pRigid->SetKinematic(false);
+		m_pRigid->AddForce(physx::PxVec3(-m_BombForce, 0, 0), physx::PxForceMode::eIMPULSE);
+		m_MoveBomb = false;
+		m_WasAlreadyPushed = true;
+		break;
+
+	case MoveDirection::RIGHT:
+		m_pRigid->SetKinematic(false);
+		m_pRigid->AddForce(physx::PxVec3(m_BombForce, 0, 0), physx::PxForceMode::eIMPULSE);
+		m_MoveBomb = false;
+		m_WasAlreadyPushed = true;
+		break;
+	}
+}
+
+void Bomb::XRayCast(const physx::PxVec3& pos, const physx::PxVec3& dir)
+{
+	physx::PxQueryFilterData filterData;
+	filterData.data.word0 = physx::PxU32(CollisionGroupFlag::Group1);
+	filterData.data.word1 = physx::PxU32(CollisionGroupFlag::Group5);
+
+	physx::PxRaycastBuffer hit;
+	
+	if (this->GetScene()->GetPhysxProxy()->Raycast(pos, dir, m_Range, hit, physx::PxHitFlag::eDEFAULT, filterData))
+	{
+		auto* actor = &hit.getAnyHit(0).actor->userData;
+		RigidBodyComponent* component = static_cast<RigidBodyComponent*>(*actor);
+		ControllerComponent* test = static_cast<ControllerComponent*>(*actor);
+		GameObject* obj = component->GetGameObject();
+		IndestructableBox* convertObj = dynamic_cast<IndestructableBox*>(obj);
+		if (!convertObj)
+		{
+			if (test->GetGroupFlag() == CollisionGroupFlag::Group1)
+			{
+				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().x - GetTransform()->GetPosition().x) + m_BombRange);
+				m_VecHitObjects.push_back(obj);
+			}
+
+			else if ((component->GetCollisionFlag() == CollisionGroupFlag::Group1))
+			{
+				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().x - GetTransform()->GetPosition().x) + m_BombRange);
+				m_VecHitObjects.push_back(obj);
+			}
+		}
+		else
+			m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().x - GetTransform()->GetPosition().x) + m_BombRange);
+	}
+	else
+		m_VecRanges.push_back(m_Range);
+}
+
+void Bomb::ZRayCast(const physx::PxVec3& pos, const physx::PxVec3& dir)
+{
+	physx::PxQueryFilterData filterData;
+	filterData.data.word0 = physx::PxU32(CollisionGroupFlag::Group1);
+	filterData.data.word1 = physx::PxU32(CollisionGroupFlag::Group5);
+
+	physx::PxRaycastBuffer hit;
+	
+	if (this->GetScene()->GetPhysxProxy()->Raycast(pos, dir, m_Range, hit, physx::PxHitFlag::eDEFAULT, filterData))
+	{
+		auto actor = &hit.getAnyHit(0).actor->userData;
+		RigidBodyComponent* component = static_cast<RigidBodyComponent*>(*actor);
+		ControllerComponent* test = static_cast<ControllerComponent*>(*actor);
+		auto obj = component->GetGameObject();
+		auto convertObj = dynamic_cast<IndestructableBox*>(obj);
+		if (!convertObj)
+		{
+			if (test->GetGroupFlag() == CollisionGroupFlag::Group1)
+			{
+				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().z - GetTransform()->GetPosition().z) + m_BombRange);
+				m_VecHitObjects.push_back(obj);
+			}
+
+			else if ((component->GetCollisionFlag() == CollisionGroupFlag::Group1))
+			{
+				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().z - GetTransform()->GetPosition().z) + m_BombRange);
+				m_VecHitObjects.push_back(obj);
+			}
+		}
+		else
+			m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().z - GetTransform()->GetPosition().z) + m_BombRange);
+	}
+	else
+		m_VecRanges.push_back(m_Range);
 }
 

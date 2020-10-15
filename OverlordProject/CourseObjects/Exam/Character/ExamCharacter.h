@@ -11,7 +11,7 @@ class ExamCharacter final : public GameObject
 
 public:
 
-	enum CharacterInput : UINT
+	enum  CharacterInput : UINT
 	{
 		LEFT = 0,
 		RIGHT,
@@ -61,17 +61,21 @@ public:
 	void SetBombRange(float range) { m_BombRange = range; }
 	void SetDead();
 	std::vector<Bomb*>* GetBombs() { return &m_VecBombs; }
-	bool GetShouldDestroy() const { return m_ShouldDestroy; }
-	int GetCharacterNr() const { return m_CharacterNr; }
-	int GetNrOfBombs() const { return m_MaxNrOfBombs; }
-	int GetRangeMultiplier() const { return m_RangeMultiplier; }
-	int GetNrOfInputElements() const { return m_nrOfInputElements; }
+	const bool& GetShouldDestroy() const { return m_ShouldDestroy; }
+	const int& GetCharacterNr() const { return m_CharacterNr; }
+	const int& GetNrOfBombs() const { return m_MaxNrOfBombs; }
+	const int& GetRangeMultiplier() const { return m_RangeMultiplier; }
+	const int& GetNrOfInputElements() const { return m_nrOfInputElements; }
 	static void ResetCharacterNr() { m_InstanceCount = 0; }
 
 private:
+	//VARIABLES
 	ControllerComponent* m_pController;
 	const int m_nrOfInputElements{7};
 	const float m_PushRange{ 11.5f };
+	const float m_BombOffset{10.f};
+	const float m_Scale{0.25f};
+	const float m_HeightDiv{1.25f};
 	CameraComponent* m_pCamera;
 	ModelComponent* m_pModel;
 	float m_TotalPitch, m_TotalYaw;

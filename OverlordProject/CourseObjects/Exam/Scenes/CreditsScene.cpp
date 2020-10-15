@@ -10,6 +10,7 @@ CreditsScene::CreditsScene() : GameScene(L"CreditsScene")
 
 void CreditsScene::Initialize()
 {
+	//ADD SPRITE, SET PIVOT AND PUT IT TO CENTER OF THE SCREEN
 	m_pCreditsScreenSprite = new GameObject();
 	m_pCreditsScreenSprite->AddComponent(new SpriteComponent(L"./Resources/Textures/CreditsScreen.png", DirectX::XMFLOAT2(0.5f, 0.5f)));
 	AddChild(m_pCreditsScreenSprite);

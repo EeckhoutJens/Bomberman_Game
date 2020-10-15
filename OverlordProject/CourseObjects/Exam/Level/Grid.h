@@ -22,6 +22,8 @@ private:
 
 	DirectX::XMFLOAT2 m_StartPos;
 	float m_Width, m_Height, m_Offset;
+	const float m_DefaultYValue{4.5f};
+	const int m_NrOfBlocksToDelete{ 20 };
 	int m_Rows, m_Cols;
 	std::vector<GameObject*> m_VecBoxes{};
 	UINT m_DestructableMat, m_IndestructableMat;

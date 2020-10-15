@@ -28,10 +28,10 @@ void BombPowerUp::Initialize(const GameContext& gameContext)
 	auto pModelObject = new GameObject();
 	pModelObject->AddComponent(powerUpModel);
 	AddChild(pModelObject);
-	pModelObject->GetTransform()->Translate(0, -7.75, 0);
+	pModelObject->GetTransform()->Translate(0, m_YPosOffset, 0);
 	pModelObject->GetTransform()->Rotate(90, -90, 0);
 	GetTransform()->Translate(m_Pos);
-	GetTransform()->Scale(0.2f, 0.2f, 0.2f);
+	GetTransform()->Scale(m_Scale, m_Scale, m_Scale);
 
 }
 

@@ -12,7 +12,7 @@ LevelBorder::LevelBorder(DirectX::XMFLOAT2 startPos, float width, float height, 
 	int nrOfBlocks{};
 	for (float currWidth = 0; currWidth <= m_Width; currWidth += m_Offset)
 	{
-		GameObject* objectToAdd = new IndestructableBox(DirectX::XMFLOAT3(m_StartPos.x + currWidth, 4.5f, m_StartPos.y), m_IndestructableMat);
+		GameObject* objectToAdd = new IndestructableBox(DirectX::XMFLOAT3(m_StartPos.x + currWidth, m_DefaultYValue, m_StartPos.y), m_IndestructableMat);
 		m_VecBoxes.push_back(objectToAdd);
 		++nrOfBlocks;
 	}
@@ -21,7 +21,7 @@ LevelBorder::LevelBorder(DirectX::XMFLOAT2 startPos, float width, float height, 
 	{
 		if (currWidth != 0)
 		{
-			GameObject* objectToAdd = new IndestructableBox(DirectX::XMFLOAT3(m_StartPos.x + currWidth, 4.5f, m_StartPos.y + m_Height), m_IndestructableMat);
+			GameObject* objectToAdd = new IndestructableBox(DirectX::XMFLOAT3(m_StartPos.x + currWidth, m_DefaultYValue, m_StartPos.y + m_Height), m_IndestructableMat);
 			m_VecBoxes.push_back(objectToAdd);
 			++nrOfBlocks;
 		}
@@ -31,7 +31,7 @@ LevelBorder::LevelBorder(DirectX::XMFLOAT2 startPos, float width, float height, 
 	{
 		if (currHeight != 0)
 		{
-			GameObject* objectToAdd = new IndestructableBox(DirectX::XMFLOAT3(m_StartPos.x, 4.5f, m_StartPos.y + currHeight), m_IndestructableMat);
+			GameObject* objectToAdd = new IndestructableBox(DirectX::XMFLOAT3(m_StartPos.x, m_DefaultYValue, m_StartPos.y + currHeight), m_IndestructableMat);
 			m_VecBoxes.push_back(objectToAdd);
 			++nrOfBlocks;
 		}
@@ -41,7 +41,7 @@ LevelBorder::LevelBorder(DirectX::XMFLOAT2 startPos, float width, float height, 
 	{
 		if (currHeight != 0 && currHeight != m_Height)
 		{
-			GameObject* objectToAdd = new IndestructableBox(DirectX::XMFLOAT3(m_StartPos.x + m_Width, 4.5f, m_StartPos.y + currHeight), m_IndestructableMat);
+			GameObject* objectToAdd = new IndestructableBox(DirectX::XMFLOAT3(m_StartPos.x + m_Width, m_DefaultYValue, m_StartPos.y + currHeight), m_IndestructableMat);
 			m_VecBoxes.push_back(objectToAdd);
 			++nrOfBlocks;
 		}

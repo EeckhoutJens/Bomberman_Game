@@ -17,5 +17,7 @@ public:
 private:
 	UINT m_MatID;
 	DirectX::XMFLOAT3 m_Pos;
+	const float m_GeomScale{4.5f};
+	const float m_Scale{0.3f};
 };
 

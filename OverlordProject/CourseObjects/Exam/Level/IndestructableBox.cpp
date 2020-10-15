@@ -18,13 +18,13 @@ void IndestructableBox::Initialize(const GameContext& gameContext)
 	auto pIndestructableModel = new ModelComponent(L"./Resources/Meshes/WoodenBox.ovm");
 	auto rigidBodyBox = new RigidBodyComponent(true);
 	rigidBodyBox->SetCollisionGroup(CollisionGroupFlag::Group1);
-	std::shared_ptr<physx::PxGeometry> boxGeom(new physx::PxBoxGeometry(4.5f, 4.5f, 4.5f));
+	std::shared_ptr<physx::PxGeometry> boxGeom(new physx::PxBoxGeometry(m_GeomScale, m_GeomScale, m_GeomScale));
 	auto pBoxCollider = new ColliderComponent(boxGeom, *boxPhysicsMat);
 
 	pIndestructableModel->SetMaterial(m_MatID);
 
 	GetTransform()->Translate(m_Pos.x, m_Pos.y, m_Pos.z);
-	GetTransform()->Scale(0.3f, 0.3f, 0.3f);
+	GetTransform()->Scale(m_Scale, m_Scale, m_Scale);
 	AddComponent(pIndestructableModel);
 	AddComponent(rigidBodyBox);
 	AddComponent(pBoxCollider);

@@ -40,6 +40,7 @@ protected:
 	void SceneDeactivated() override;
 
 private:
+	//FUNCTIONS
 	void CreateNewCharacter();
 	void CheckCharacterBombs();
 	void CheckCharacters();
@@ -50,6 +51,9 @@ private:
 	void Restart();
 	void Unpause();
 	void Pause();
+	void CheckCameraShake();
+
+	//VARIABLES
 	std::vector<ExamCharacter*> m_VecCharacters;
 	std::vector<BombPowerUp*> m_VecBombPU;
 	std::vector<RangePowerUp*> m_VecRangePU;

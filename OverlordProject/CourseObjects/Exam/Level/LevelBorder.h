@@ -16,6 +16,7 @@ public:
 private:
 	DirectX::XMFLOAT2 m_StartPos;
 	float m_Width, m_Height, m_Offset;
+	const float m_DefaultYValue{ 4.5f };
 	std::vector<GameObject*> m_VecBoxes{};
 	UINT m_IndestructableMat;
 };

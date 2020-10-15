@@ -117,19 +117,18 @@ void ExamCharacter::Initialize(const GameContext& gameContext)
 	auto *pModelObject = new GameObject();
 	pModelObject->AddComponent(m_pModel);
 	AddChild(pModelObject);
-	pModelObject->GetTransform()->Translate(0, -m_Height / 1.25f, 0);
+	pModelObject->GetTransform()->Translate(0, -m_Height / m_HeightDiv, 0);
 }
 
 void ExamCharacter::PostInitialize(const GameContext& gameContext)
 {
 	UNREFERENCED_PARAMETER(gameContext);
-	GetChild<GameObject>()->GetTransform()->Scale(0.25f, 0.25f, 0.25f);
+	GetChild<GameObject>()->GetTransform()->Scale(m_Scale, m_Scale, m_Scale);
 }
 
 void ExamCharacter::Update(const GameContext& gameContext)
 {
 	//TODO: Update the character (Camera rotation, Character Movement, Character Gravity)
-
 	if (m_IsDead)
 	{
 		if (!m_pModel->GetAnimator()->GetPlayOnce())
@@ -279,7 +278,7 @@ void ExamCharacter::Update(const GameContext& gameContext)
 				{
 					XMFLOAT3 bombPos = pBomb->GetTransform()->GetPosition();
 					float distance = hypot(hypot(bombPos.x - characterPos.x, bombPos.y - characterPos.y), bombPos.z - characterPos.z);
-					if (distance < 10)
+					if (distance < m_BombOffset)
 					{
 						canPlaceBomb = false;
 					}
@@ -339,6 +338,7 @@ void ExamCharacter::Update(const GameContext& gameContext)
 	}
 
 
+	//ROTATE CHARACTER TOWARDS INPUT AND SET ANIMATIONS
 	if (finalVelocity.x != 0 || finalVelocity.z != 0)
 	{
 		if (forwardFloat.z > 0.5)

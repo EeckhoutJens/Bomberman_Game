@@ -1,2 +1,0 @@
-C:\Users\jense\Documents\GitHub\Bomberman_Game\OverlordEngine\Debug\OverlordEngine.lib
-C:\Users\jense\Documents\GitHub\Bomberman_Game\OverlordEngine\Debug\OverlordEngine.pdb

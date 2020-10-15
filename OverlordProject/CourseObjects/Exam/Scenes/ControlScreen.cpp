@@ -13,6 +13,7 @@ ControlScreen::ControlScreen() : GameScene(L"ControlScreen")
 
 void ControlScreen::Initialize()
 {
+	//ADD SPRITE, SET PIVOT AND PUT IT TO CENTER OF THE SCREEN
 	m_pControlScreenSprite = new GameObject();
 	m_pControlScreenSprite->AddComponent(new SpriteComponent(L"./Resources/Textures/ControlScreen.png", DirectX::XMFLOAT2(0.5f, 0.5f)));
 	AddChild(m_pControlScreenSprite);

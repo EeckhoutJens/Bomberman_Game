@@ -33,11 +33,11 @@ Grid::Grid(DirectX::XMFLOAT2 startPos, float width, float height, int rows, int 
 			{
 
 			case BlockType::Destructable:
-				objectToAdd = new DestructableBox(DirectX::XMFLOAT3(m_StartPos.x + currWidth, 4.5f, m_StartPos.y + currHeight), m_DestructableMat);
+				objectToAdd = new DestructableBox(DirectX::XMFLOAT3(m_StartPos.x + currWidth, m_DefaultYValue, m_StartPos.y + currHeight), m_DestructableMat);
 				break;
 
 			case BlockType::Indestructable:
-				objectToAdd = new IndestructableBox(DirectX::XMFLOAT3(m_StartPos.x + currWidth, 4.5f, m_StartPos.y + currHeight), m_IndestructableMat);
+				objectToAdd = new IndestructableBox(DirectX::XMFLOAT3(m_StartPos.x + currWidth, m_DefaultYValue, m_StartPos.y + currHeight), m_IndestructableMat);
 				break;
 
 			default:
@@ -84,7 +84,7 @@ Grid::Grid(DirectX::XMFLOAT2 startPos, float width, float height, int rows, int 
 
 
 	//CLEAR X-AMOUNT OF RANDOM BLOCKS
-	for (int i{}; i < 20; ++i)
+	for (int i{}; i < m_NrOfBlocksToDelete; ++i)
 	{
 		int rand = std::rand() % (m_VecBoxes.size());
 		if (m_VecBoxes[rand])
