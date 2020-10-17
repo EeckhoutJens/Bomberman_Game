@@ -154,17 +154,19 @@ void Bomb::XRayCast(const physx::PxVec3& pos, const physx::PxVec3& dir)
 	{
 		auto* actor = &hit.getAnyHit(0).actor->userData;
 		RigidBodyComponent* component = static_cast<RigidBodyComponent*>(*actor);
-		ControllerComponent* test = static_cast<ControllerComponent*>(*actor);
+		ControllerComponent* playerControlComp = static_cast<ControllerComponent*>(*actor);
 		GameObject* obj = component->GetGameObject();
 		IndestructableBox* convertObj = dynamic_cast<IndestructableBox*>(obj);
 		if (!convertObj)
 		{
-			if (test->GetGroupFlag() == CollisionGroupFlag::Group1)
+			//CHECK FOR CHARACTER HIT
+			if (playerControlComp->GetGroupFlag() == CollisionGroupFlag::Group1)
 			{
 				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().x - GetTransform()->GetPosition().x) + m_BombRange);
 				m_VecHitObjects.push_back(obj);
 			}
 
+			//CHECK FOR BOX HIT
 			else if ((component->GetCollisionFlag() == CollisionGroupFlag::Group1))
 			{
 				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().x - GetTransform()->GetPosition().x) + m_BombRange);
@@ -190,17 +192,19 @@ void Bomb::ZRayCast(const physx::PxVec3& pos, const physx::PxVec3& dir)
 	{
 		auto actor = &hit.getAnyHit(0).actor->userData;
 		RigidBodyComponent* component = static_cast<RigidBodyComponent*>(*actor);
-		ControllerComponent* test = static_cast<ControllerComponent*>(*actor);
+		ControllerComponent* playerControlComp = static_cast<ControllerComponent*>(*actor);
 		auto obj = component->GetGameObject();
 		auto convertObj = dynamic_cast<IndestructableBox*>(obj);
 		if (!convertObj)
 		{
-			if (test->GetGroupFlag() == CollisionGroupFlag::Group1)
+			//CHECK FOR CHARACTER HIT
+			if (playerControlComp->GetGroupFlag() == CollisionGroupFlag::Group1)
 			{
 				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().z - GetTransform()->GetPosition().z) + m_BombRange);
 				m_VecHitObjects.push_back(obj);
 			}
 
+			//CHECK FOR BOX HIT
 			else if ((component->GetCollisionFlag() == CollisionGroupFlag::Group1))
 			{
 				m_VecRanges.push_back(std::abs(obj->GetTransform()->GetPosition().z - GetTransform()->GetPosition().z) + m_BombRange);
